@@ -1,0 +1,157 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<style>
+  td.details-control {
+    background: url('../resources/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('../resources/details_close.png') no-repeat center center;
+}
+</style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Fetching App</title>
+  <link href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+  <h1>Data Fetching App</h1>
+  <ul id="dataList"></ul>
+
+  <table id="example" class="display" style="width:100%">
+  <thead>
+      <tr>
+          <th></th>
+          <th>Name</th>
+          <th>Position</th>
+          <th>Office</th>
+          <th>Salary</th>
+        
+      </tr>
+  </thead>
+  <tfoot>
+      <tr>
+          <th></th>
+          <th>Name</th>
+          <th>Position</th>
+          <th>Office</th>
+          <th>Salary</th>
+      </tr>
+  </tfoot>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+  <!-- <script>
+  // script.js
+$(document).ready(function() {
+  const dataList = $('#dataList');
+  // Function to fetch data using jQuery AJAX
+  function fetchData() {
+    $.ajax({
+      url: 'http://localhost:3050/api/data',
+      type: 'GET',
+      dataType: 'json',
+      success: function(data) {
+        // Display the data on the frontend
+        data.forEach(item => {
+          const li = $('<li>').text(item.name);
+          dataList.append(li);
+        });
+      },
+      error: function(xhr, status, error) {
+        console.error('Error fetching data:', status, error);
+      }
+    });
+  }
+  // Call the fetchData function to populate the list
+  fetchData();
+});
+  </script> -->
+
+
+<script>
+function format ( d ) {
+    // `d` is the original data object for the row
+    return '<table  id="example" class="display dataTable"   style="width:100%; padding-left:50px; text-align:left">'+
+      "<thead"+'<tr class="sorting">'+
+          '<th >Name</th>'+ '<th>Position</th>'+  '<th>Office</th>'+'<th>Salary</th>'+ "<thead>"+
+      
+      "<tbody>"+
+        '<tr>'+
+          '<td>'+d.name +'</td>'+
+          '<td>'+d.position+'</td>'+
+          '<td>'+d.office+'</td>'+
+          '<td>'+d.salary+'</td>'+
+        '</tr>'+ 
+        '<tr>'+
+          '<td>'+d.name +'</td>'+
+          '<td>'+d.position+'</td>'+
+          '<td>'+d.office+'</td>'+
+          '<td>'+d.salary+'</td>'+
+        '</tr>'+  "<tbody>"+
+          
+        
+      // '<tr >'+
+      //       '<td>Full name:</td>'+
+      //       '<td>'+d.name+'</td>'+
+      //   '</tr>'+
+      //   '<tr>'+
+      //       '<td>Extension number:</td>'+
+      //       '<td>'+d.extn+'</td>'+
+      //   '</tr>'+
+      //   '<tr>'+
+      //       '<td>Extra info:</td>'+
+      //       '<td>And any further details here (images etc)...</td>'+
+      //   '</tr>'+
+    '</table>';
+  
+     
+
+}
+ 
+$(document).ready(function() {
+    var table = $('#example').DataTable( {
+        "ajax": "http://localhost:3050/api/data",
+        "columns": [
+            {
+                "className":      'details-control',
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": '',
+            },
+            { "data": "name" },
+            { "data": "position" },
+            { "data": "office" },
+            { "data": "salary" }
+        ],
+
+        "order": [[1, 'asc']]
+    } );
+     
+    // Add event listener for opening and closing details
+    $('#example tbody').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+ 
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            // Open this row
+            row.child( format(row.data()) ).show();
+            tr.addClass('shown');
+        }
+    } );
+} );
+</script>
+
+
+</body>
+</html>
